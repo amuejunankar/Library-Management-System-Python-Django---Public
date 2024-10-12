@@ -99,7 +99,7 @@ WSGI_APPLICATION = 'library_management.wsgi.application'
 # 
 
 DATABASES = {
-    'default': dj_database_url.parse("postgres://avnadmin:AVNS_yZeBzKDrXfRpEzsR2rn@instabook-torresjunankar-d89a.h.aivencloud.com:26544/defaultdb?sslmode=require")
+    'default': dj_database_url.parse("Paste DB Link Here")
 }
 
 # DATABASES = {
