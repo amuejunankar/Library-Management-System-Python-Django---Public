@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Return Book</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5a623;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --light-text-color: #666;
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+
+        .return-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .return-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .return-header h2 {
+            margin: 0;
+            font-size: 36px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .return-content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 40px;
+            gap: 40px;
+        }
+
+        .book-info {
+            flex: 1 1 60%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .book-cover-container {
+            flex: 0 0 auto;
+            max-width: 250px;
+        }
+
+        .book-cover {
+            width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .book-cover:hover {
+            transform: scale(1.05);
+        }
+
+        .book-title-author {
+            flex: 1 1 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .book-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .book-author {
+            font-size: 20px;
+            color: var(--light-text-color);
+        }
+
+        .book-details {
+            flex: 1 1 100%;
+            background-color: var(--background-color);
+            padding: 30px;
+            border-radius: var(--border-radius);
+        }
+
+        .book-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .meta-item {
+            font-size: 16px;
+            color: var(--light-text-color);
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .meta-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .meta-item strong {
+            display: block;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .return-form {
+            flex: 1 1 30%;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        .form-group input[type='text'] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input[type='text']:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .fine-info {
+            background-color: var(--background-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .fine-info p {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: var(--light-text-color);
+        }
+
+        .fine-amount {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+        }
+
+        @media (max-width: 992px) {
+            .return-content {
+                flex-direction: column;
+            }
+            .book-info, .return-form {
+                flex: 1 1 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .book-info {
+                flex-direction: column;
+                align-items: center;
+            }
+            .book-cover-container {
+                max-width: 100%;
+            }
+            .book-title-author {
+                text-align: center;
+            }
+            .return-header h2 {
+                font-size: 28px;
+            }
+            .book-title {
+                font-size: 24px;
+            }
+            .book-author {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'library/navbar.html' %}
+
+    <div class="return-container">
+        <div class="return-header">
+            <h2>Return Your Book</h2>
+        </div>
+        <div class="return-content">
+            <div class="book-info">
+                <div class="book-cover-container">
+                    {% if borrowed_book.book.cover_image %}
+                        <img src="{{ borrowed_book.book.cover_image.url }}" alt="{{ borrowed_book.book.title }} cover" class="book-cover">
+                    {% endif %}
+                </div>
+                <div class="book-title-author">
+                    <div class="book-title">{{ borrowed_book.book.title }}</div>
+                    <div class="book-author">by {{ borrowed_book.book.author.name }}</div>
+                </div>
+                <div class="book-details">
+                    <div class="book-meta">
+                        <div class="meta-item">
+                            <strong>ISBN</strong>
+                            {{ borrowed_book.book.isbn }}
+                        </div>
+                        <div class="meta-item">
+                            <strong>Genre</strong>
+                            {{ borrowed_book.book.get_genre_display }}
+                        </div>
+                        <div class="meta-item">
+                            <strong>Language</strong>
+                            {{ borrowed_book.book.get_language_display }}
+                        </div>
+                        <div class="meta-item">
+                            <strong>Pages</strong>
+                            {{ borrowed_book.book.number_of_pages }}
+                        </div>
+                        <div class="meta-item">
+                            <strong>Published</strong>
+                            {{ borrowed_book.book.published_year }}
+                        </div>
+                        <div class="meta-item">
+                            <strong>Category</strong>
+                            {{ borrowed_book.book.get_category_display }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="return-form">
+                <form method="post" id="returnForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="borrowed_book_id" value="{{ borrowed_book.id }}">
+                    <div class="form-group">
+                        <label for="due_date">Due Date:</label>
+                        <input type="text" id="dueDate" disabled value="{{ borrowed_book.due_date }}">
+                    </div>
+                    <div class="fine-info">
+                        <p>Delayed Return Penalty: Rs 49 per day after due date</p>
+                        <p>Your penalty: <span class="fine-amount">Rs <span id="fineAmount"></span></span></p>
+                    </div>
+                    <button type="submit" class="submit-btn">Confirm Return</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dueDateInput = document.getElementById('dueDate');
+        const dueDate = new Date(dueDateInput.value);
+        
+        const today = new Date();
+        const daysDelayed = Math.max(0, Math.floor((today - dueDate) / (1000 * 60 * 60 * 24)));
+        const penaltyAmountPerDay = 49;
+        const delayedPenalty = daysDelayed * penaltyAmountPerDay;
+
+        const fineAmountSpan = document.getElementById('fineAmount');
+        fineAmountSpan.textContent = delayedPenalty;
+    </script>
+</body>
+</html>

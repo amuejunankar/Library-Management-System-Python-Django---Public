@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book List</title>
+    <link rel="stylesheet" href="{% static 'styles/index.css' %}" />
+
+    <style>
+      .show_book_container {
+        margin-left: 10%;
+        margin-right: 10%;
+        margin-bottom: 5%;
+      }
+      
+      /* CSS for card-style view */
+      .book-cards {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 20px;
+      }
+      
+      .book-card {
+        margin-top: 40px;
+        position: relative;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+      
+      .book-card:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+      
+      .book-card a {
+        text-decoration: none;
+        color: inherit;
+      }
+      
+      .book-title {
+        font-size: 20px;
+        margin-bottom: 10px;
+        color: #333333;
+      }
+      
+      .book-author {
+        color: #666666;
+        margin-bottom: 5px;
+      }
+      
+      .book-info p {
+        margin: 5px 0;
+        color: #777777;
+      }
+      
+      .select-button {
+        background-color: #f4f4f4;
+        padding: 12px 12px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        border-width: 2px;
+      }
+      
+      .select-button:hover {
+        background-color: #f0e7e7;
+        color: #000000;
+      }
+      
+      form.searchForm input,
+      form.searchForm button {
+        padding: 12px 12px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+      
+      form.searchForm input:hover,
+      form.searchForm button:hover {
+        background-color: #f0e7e7;
+        color: #000000;
+      }
+      
+      .bottom_info {
+        position: absolute;
+        bottom: 14px;
+        color: #777777;
+        width: 85%;
+      }
+      
+      .view_details_BTN,
+      .notifyBTN,
+      .add_to_wishlist_BTN,
+      .IssueBTN {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        background-color: rgb(207, 199, 252);
+        border: none;
+        transition: background-color 0.3s, font-size 0.3s;
+        cursor: pointer;
+        text-decoration: none;
+        color: #000000;
+      }
+      
+      .view_details_BTN:hover,
+      .notifyBTN:hover,
+      .add_to_wishlist_BTN:hover,
+      .IssueBTN:hover {
+        background-color: rgb(106, 141, 255);
+      }
+      
+      .notifyBTN {
+        background-color: springgreen;
+      }
+      
+      .notifyBTN:hover {
+        background-color: yellowgreen;
+      }
+      
+      .add_to_wishlist_BTN {
+        background-color: turquoise;
+      }
+      
+      .add_to_wishlist_BTN:hover {
+        background-color: #d0b6b6;
+      }
+      
+      .IssueBTN {
+        background-color: burlywood;
+      }
+      
+      .IssueBTN:hover {
+        background-color: rgb(59, 229, 105);
+      }
+      
+      .buttons {
+        margin-top: 5%;
+        display: flex;
+        justify-content: space-between;
+        gap: 5px;
+      }
+      
+      .searchSort {
+        display: flex;
+        justify-content: space-between;
+      }
+    </style>
+  </head>
+  <body>
+    {% include 'library/navbar.html' %}
+
+    <div class="show_book_container">
+      <h1>Book List</h1>
+      <div class="searchSort">
+          <form class="searchForm" method="POST">
+              {% csrf_token %}
+              <input type="text" name="search_query" value="{{ search_query }}" placeholder="Search Book or Author">
+              <button type="submit" name="search_type" value="book">Search by Book</button>
+              <button type="submit" name="search_type" value="author">Search by Author</button>
+          </form>
+
+          <div class="filters">
+              <form method="POST" id="filtersForm">
+                  {% csrf_token %}
+                  
+                  <select name="sort" id="sortSelect" class="select-button">
+                      <option value="" {% if not selected_sort %}selected{% endif %}>Sort Default</option>
+                      <option value="name_asc" {% if selected_sort == 'name_asc' %}selected{% endif %}>Name A-Z</option>
+                      <option value="name_desc" {% if selected_sort == 'name_desc' %}selected{% endif %}>Name Z-A</option>
+                      <option value="published_year_desc" {% if selected_sort == 'published_year_desc' %}selected{% endif %}>Published Year ↓</option>
+                  </select>
+                  
+                  <select name="language" id="languageSelect" class="select-button">
+                      <option value="" {% if not selected_language %}selected{% endif %}>Language > All</option>
+                      <option value="EN" {% if selected_language == 'EN' %}selected{% endif %}>English</option>
+                      <option value="FR" {% if selected_language == 'FR' %}selected{% endif %}>French</option>
+                      <option value="DE" {% if selected_language == 'DE' %}selected{% endif %}>German</option>
+                      <option value="HI" {% if selected_language == 'HI' %}selected{% endif %}>Hindi</option>
+                      <option value="TA" {% if selected_language == 'TA' %}selected{% endif %}>Tamil</option>
+                  </select>
+                  
+                  <select name="genre" id="genreSelect" class="select-button">
+                      <option value="" {% if not selected_genre %}selected{% endif %}>Genre > All</option>
+                      <option value="SCI" {% if selected_genre == 'SCI' %}selected{% endif %}>Science Fiction</option>
+                      <option value="HIST" {% if selected_genre == 'HIST' %}selected{% endif %}>Historical Fiction</option>
+                      <option value="NF" {% if selected_genre == 'NF' %}selected{% endif %}>Non-Fiction</option>
+                      <option value="THR" {% if selected_genre == 'THR' %}selected{% endif %}>Thriller</option>
+                      <option value="BIO" {% if selected_genre == 'BIO' %}selected{% endif %}>Biography</option>
+                      <option value="HOR" {% if selected_genre == 'HOR' %}selected{% endif %}>Horror</option>
+                  </select>
+
+                  <select name="category" id="categorySelect" class="select-button">
+                      <option value="" {% if not selected_category %}selected{% endif %}>Category > All</option>
+                      <option value="NOV" {% if selected_category == 'NOV' %}selected{% endif %}>Novel</option>
+                      <option value="BIO" {% if selected_category == 'BIO' %}selected{% endif %}>Biography</option>
+                      <option value="COM" {% if selected_category == 'COM' %}selected{% endif %}>Comics</option>
+                      <option value="POE" {% if selected_category == 'POE' %}selected{% endif %}>Poetry</option>
+                      <option value="DRA" {% if selected_category == 'DRA' %}selected{% endif %}>Drama</option>
+                      <option value="ART" {% if selected_category == 'ART' %}selected{% endif %}>Art</option>
+                      <option value="SEL" {% if selected_category == 'SEL' %}selected{% endif %}>Self-help</option>
+                      <option value="CHI" {% if selected_category == 'CHI' %}selected{% endif %}>Children</option>
+                      <option value="YA" {% if selected_category == 'YA' %}selected{% endif %}>Young Adult</option>
+                      <option value="ACA" {% if selected_category == 'ACA' %}selected{% endif %}>Academic</option>
+                  </select>
+
+                  <select name="age_group" id="ageGroupSelect" class="select-button">
+                      <option value="" {% if not selected_age_group %}selected{% endif %}>Age Group > All</option>
+                      <option value="CH" {% if selected_age_group == 'CH' %}selected{% endif %}>Children</option>
+                      <option value="YA" {% if selected_age_group == 'YA' %}selected{% endif %}>Young Adult</option>
+                      <option value="AD" {% if selected_age_group == 'AD' %}selected{% endif %}>Adult</option>
+                  </select>
+              </form>
+          </div>
+      </div>
+
+      
+<div class="book-cards">
+  {% if books %}
+    {% for book in books %}
+      <div class="book-card">
+        <a href="{% url 'book_detail' pk=book.pk %}">
+          <div class="book-info">
+            <img src="{{ book.cover_image.url }}" alt="Book Cover" style="width: 100%; height: 380px; border-radius: 8px;" />
+            <div class="buttons">
+              <button class="view_details_BTN"><a href="{% url 'book_detail' pk=book.pk %}" class="book-link" style="text-decoration: none;">View Details</a></button>
+              <button class="add_to_wishlist_BTN"><a href="{% url 'add_to_wishlist' pk=book.pk %}" class="book-link" style="text-decoration: none;">Wishlist</a></button>
+              {% if book.available_copies == 0 %}
+                <button class="notifyBTN" type="button"><a href="{% url 'notify' pk=book.pk %}" class="book-link" style="text-decoration: none;">Notify Me</a></button>
+              {% else %}
+                <button class="IssueBTN" type="button"><a href="{% url 'borrow_book' pk=book.pk %}" class="book-link" style="text-decoration: none;">Issue Book</a></button>
+              {% endif %}
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  {% else %}
+    <h2>No Books Found</h2>
+  {% endif %}
+</div>
+</div>
+
+    <script>
+      document.querySelectorAll('.select-button').forEach(function (select) {
+        select.addEventListener('change', function () {
+          document.getElementById('filtersForm').submit()
+        })
+      })
+    </script>
+  
+  </body>
+</html>

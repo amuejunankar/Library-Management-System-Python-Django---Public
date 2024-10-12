@@ -1,0 +1,14 @@
+path("forgot_password", views.forgot_password, name="forgot_password"),
+path("otp_verification", views.otp_verification, name="otp_verification"),
+path("reset_password", views.reset_password, name="reset_password"),
+
+
+# Create your models here.  
+class userDB(models.Model):
+    email = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.email
+    
+AUTH_USER_MODEL = 'auth.User'

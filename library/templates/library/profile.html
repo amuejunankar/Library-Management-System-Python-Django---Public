@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <link rel="stylesheet" href="{% static 'styles/index.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .profile-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        .profile-content {
+            display: flex;
+            gap: 30px;
+        }
+
+        .profile-sidebar {
+            flex: 1;
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-main {
+            flex: 3;
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .profile-menu li {
+            margin-bottom: 15px;
+        }
+
+        .profile-menu a {
+            display: block;
+            padding: 12px 15px;
+            background-color: #f0f2f5;
+            color: #333;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .profile-menu a:hover, .profile-menu a.active {
+            background-color: #2575fc;
+            color: white;
+        }
+
+        .profile-menu i {
+            margin-right: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            font-size: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #2575fc;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .user-info {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .user-info h3 {
+            margin-top: 0;
+            color: #2575fc;
+        }
+
+        .user-info p {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .profile-content {
+                flex-direction: column;
+            }
+        }
+        
+    </style>
+</head>
+
+<body>
+
+    {% include 'library/navbar.html' %}
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1>Welcome, {{ request.user.username }}</h1>
+        </div>
+
+        <div class="profile-content">
+            <div class="profile-sidebar">
+                <ul class="profile-menu">
+                    <li><a href="#" id="profile-info-menu" class="active"><i class="fas fa-user"></i> Profile Info</a></li>
+                    <li><a href="#" id="change-password-menu"><i class="fas fa-lock"></i> Change Password</a></li>
+                    <li><a href="#" id="delete-account-menu"><i class="fas fa-trash-alt"></i> Delete Account</a></li>
+                    <li><a href="#" id="raise-issue-menu"><i class="fas fa-exclamation-circle"></i> Raise Issue</a></li>
+                </ul>
+            </div>
+
+            <div class="profile-main">
+                <div id="content">
+                    <div class="user-info">
+                        <h3>User Details</h3>
+                        <p><strong>Username:</strong> {{ request.user.username }}</p>
+                        <p><strong>Email:</strong> {{ request.user.email }}</p>
+                    </div>
+                    <h4>Select an option from the menu to manage your account.</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.profile-menu a').click(function(e) {
+                e.preventDefault();
+                $('.profile-menu a').removeClass('active');
+                $(this).addClass('active');
+            });
+
+            $('#profile-info-menu').click(function () {
+                $('#content').html(`
+                    <div class="user-info">
+                        <h3>User Details</h3>
+                        <p><strong>Username:</strong> {{ request.user.username }}</p>
+                        <p><strong>Email:</strong> {{ request.user.email }}</p>
+                    </div>
+                    <h4>Select an option from the menu to manage your account.</h4>
+                `);
+            });
+
+            $('#change-password-menu').click(function () {
+                $('#content').html(`
+                    <h3>Change Password</h3>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="change_password">
+                        <div class="form-group">
+                            <label for="old_password">Old Password:</label>
+                            <input type="password" id="old_password" name="old_password" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_password1">New Password:</label>
+                            <input type="password" id="new_password1" name="new_password1" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_password2">Confirm New Password:</label>
+                            <input type="password" id="new_password2" name="new_password2" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </form>
+                `);
+            });
+
+            $('#delete-account-menu').click(function () {
+                $('#content').html(`
+                    <h3>Delete Account</h3>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="delete_account">
+                        <div class="form-group">
+                            <label for="confirm_delete">Type "DELETE" to confirm:</label>
+                            <input type="text" id="confirm_delete" name="confirm_delete" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-danger">Delete Account</button>
+                    </form>
+                `);
+            });
+
+            $('#raise-issue-menu').click(function () {
+                $('#content').html(`
+                    <h3>Raise Issue</h3>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="raise_issue">
+                        <div class="form-group">
+                            <label for="issue_description">Describe your issue:</label>
+                            <textarea id="issue_description" name="issue_description" class="form-control" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Issue</button>
+                    </form>
+                `);
+            });
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,134 @@
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet" />
+
+    <style>
+      .navbar {
+        background-color: #343a40;
+        padding: 20px 0;
+        color: #fff;
+      }
+      
+      .container11 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-left: 11%;
+        margin-right: 11%;
+      }
+      
+      .navbar-brand {
+        font-size: 1.5rem;
+        color: #fff;
+        text-decoration: none;
+        font-family: 'Jersey 10', sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 48px;
+      }
+      
+      .navbar-toggler {
+        display: none;
+      }
+      
+      .navbar-nav {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+        margin-left: auto;
+      }
+      
+      .nav-item {
+        padding: 0 10px;
+      }
+      
+      .nav-link {
+        color: #fff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+      
+      .nav-link:hover {
+        color: #007bff;
+      }
+      
+      @media (max-width: 900px) {
+        .navbar-toggler {
+          display: block;
+          background: none;
+          border: none;
+          color: #fff;
+          font-size: 1.5rem;
+          cursor: pointer;
+        }
+      
+        .navbar-nav {
+          display: none;
+          flex-direction: column;
+          background-color: #343a40;
+          padding: 20px;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          z-index: 999;
+        }
+      
+        .navbar-nav.active {
+          display: flex;
+        }
+      
+        .nav-item {
+          padding: 10px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    {% load static %}
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container11">
+        <a class="navbar-brand" href="{% url 'index' %}">Library University</a>
+
+        <button class="navbar-toggler" type="button" onclick="toggleMenu()">&#9776;</button>
+
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'index' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'book_list' %}">Explore Books</a>
+          </li>
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'wishlist' %}">My WishList</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'my_books' %}">My Books</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'user_profile' %}">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'user_login' %}">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'user_signup' %}">Sign Up</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+
+    <script>
+      function toggleMenu() {
+        const navbarNav = document.querySelector('.navbar-nav')
+        navbarNav.classList.toggle('active')
+      }
+    </script>
+  </body>
+</html>

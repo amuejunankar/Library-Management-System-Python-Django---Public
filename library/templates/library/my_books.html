@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Books</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+      body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f0f2f5;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+      .myb_books-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 30px;
+        font-size: 2.5em;
+      }
+      .myb_book-item {
+        display: flex;
+        margin-bottom: 30px;
+        padding: 25px;
+        border-radius: 15px;
+        background-color: #fff;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+      }
+      .myb_book-item:hover {
+        transform: translateY(-5px);
+      }
+      .myb_book-cover {
+        flex: 0 0 180px;
+        margin-right: 25px;
+      }
+      .myb_book-cover img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      }
+      .myb_book-info {
+        flex: 1;
+      }
+      .myb_book-info h2 {
+        color: #34495e;
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 1.8em;
+      }
+      .myb_book-info p {
+        margin: 10px 0;
+        font-size: 1.1em;
+        color: #7f8c8d;
+      }
+      .myb_book-actions {
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .myb_book-actions button {
+        padding: 10px 15px;
+        border-radius: 25px;
+        border: none;
+        font-size: 1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .myb_return-button {
+        background-color: #e74c3c;
+        color: white;
+      }
+      .myb_return-button:hover {
+        background-color: #c0392b;
+      }
+      .myb_audio-button {
+        background-color: #3498db;
+        color: white;
+      }
+      .myb_audio-button:hover {
+        background-color: #2980b9;
+      }
+      .myb_pdf-button {
+        background-color: #2ecc71;
+        color: white;
+      }
+      .myb_pdf-button:hover {
+        background-color: #27ae60;
+      }
+      .myb_book-actions i {
+        margin-right: 5px;
+      }
+      @media (max-width: 768px) {
+        .myb_book-item {
+          flex-direction: column;
+        }
+        .myb_book-cover {
+          margin-right: 0;
+          margin-bottom: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    {% include 'library/navbar.html' %}
+
+    <div class="myb_books-container">
+      <h1>My Borrowed Books</h1>
+      {% for borrowed_book in borrowed_books %}
+        <div class="myb_book-item">
+          <div class="myb_book-cover">
+            {% if borrowed_book.book.cover_image %}
+              <img src="{{ borrowed_book.book.cover_image.url }}" alt="{{ borrowed_book.book.title }} cover" />
+            {% else %}
+              <img src="{% static 'images/default_cover.jpg' %}" alt="Default cover" />
+            {% endif %}
+          </div>
+          <div class="myb_book-info">
+            <h2>{{ borrowed_book.book.title }}</h2>
+            <p><i class="fas fa-user"></i> Author: {{ borrowed_book.book.author.name }}</p>
+            <p><i class="fas fa-language"></i> Language: {{ borrowed_book.book.get_language_display }}</p>
+            <p><i class="fas fa-calendar-alt"></i> Borrowed Date: {{ borrowed_book.borrowed_date }}</p>
+            <p><i class="fas fa-clock"></i> Due Date: {{ borrowed_book.due_date }}</p>
+            <div class="myb_book-actions">
+              <button class="myb_return-button" type="submit">
+                <i class="fas fa-undo"></i>
+                <a style="text-decoration: none; color: #fff;" href="{% url 'return_book' pk=borrowed_book.pk %}">Return</a>
+              </button>
+              {% if borrowed_book.book.audio_book %}
+                <button class="myb_audio-button" data-audio-url="{{ borrowed_book.book.audio_book.url }}">
+                  <i class="fas fa-play"></i> Play Audio
+                </button>
+              {% endif %}
+              {% if borrowed_book.book.book_pdf %}
+                <button class="myb_pdf-button" data-pdf-url="{{ borrowed_book.book.book_pdf.url }}">
+                  <i class="fas fa-file-pdf"></i> Open PDF
+                </button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <p>You haven't borrowed any books yet.</p>
+      {% endfor %}
+    </div>
+
+    <script>
+      document.querySelectorAll('.myb_audio-button').forEach((button) => {
+        let audio = null;
+        let isPlaying = false;
+
+        button.addEventListener('click', function () {
+          if (!audio) {
+            audio = new Audio(this.dataset.audioUrl);
+          }
+
+          if (isPlaying) {
+            audio.pause();
+            this.innerHTML = '<i class="fas fa-play"></i> Play Audio';
+          } else {
+            audio.play();
+            this.innerHTML = '<i class="fas fa-pause"></i> Pause Audio';
+          }
+
+          isPlaying = !isPlaying;
+        });
+      });
+      
+      document.querySelectorAll('.myb_pdf-button').forEach((button) => {
+        button.addEventListener('click', function () {
+          window.open(this.dataset.pdfUrl, '_blank');
+        });
+      });
+    </script>
+  </body>
+</html>

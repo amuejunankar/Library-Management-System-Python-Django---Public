@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wish List</title>
+    <link rel="stylesheet" href="{% static 'styles/index.css' %}" />
+
+    <!-- Add your CSS styles here -->
+    <style>
+      .show_book_container {
+        margin-left: 10%;
+        margin-right: 10%;
+        margin-bottom: 5%;
+      }
+      
+      /* CSS for card-style view */
+      .book-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+        justify-content: center;
+      }
+      
+      .book-card {
+        width: 240px;
+        margin: 20px auto;
+        position: relative;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        transition: transform 0.3s, box-shadow 0.3s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+      
+      .book-cover {
+        width: 240px;
+        height: 360px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+      
+      .book-title {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #333333;
+        text-align: center;
+      }
+      
+      .book-author {
+        color: #666666;
+        margin-bottom: 5px;
+        text-align: center;
+      }
+      
+      .book-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .book-link {
+        color: #000000;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+      
+      form.searchForm input,
+      form.searchForm button,
+      .sort button {
+        padding: 12px 12px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+      
+      .sort button:hover,
+      form.searchForm input:hover {
+        background-color: #f0e7e7;
+        color: #000000;
+      }
+      
+      .sort button:hover,
+      form.searchForm button:hover {
+        background-color: #dac4c4;
+      }
+      
+      .view_details_BTN,
+      .remove_BTN,
+      .IssueBTN {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        background-color: rgb(207, 199, 252);
+        border: none;
+        transition: background-color 0.3s, font-size 0.3s;
+        cursor: pointer;
+        text-decoration: none;
+        color: #000000;
+        margin: 5px;
+      }
+      
+      .view_details_BTN:hover,
+      .remove_BTN:hover,
+      .IssueBTN:hover {
+        background-color: rgb(106, 141, 255);
+      }
+      
+      .remove_BTN {
+        background-color: turquoise;
+      }
+      
+      .remove_BTN:hover {
+        background-color: #d0b6b6;
+      }
+      
+      .IssueBTN {
+        background-color: burlywood;
+      }
+      
+      .IssueBTN:hover {
+        background-color: rgb(59, 229, 105);
+      }
+      
+      .buttons {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .searchSort {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+
+  <body>
+    {% include 'library/navbar.html' %}
+
+    <div class="show_book_container">
+      <h1>Wish List</h1>
+      <div class="searchSort">
+        <form class="searchForm" method="POST">
+          {% csrf_token %}
+          <input type="text" name="search_query" value="{{ search_query }}" placeholder="Search Book or Author" />
+          <button type="submit" name="search_type" value="book">Search by Book Name</button>
+          <button type="submit" name="search_type" value="author">Search by Author</button>
+        </form>
+
+        <div class="sort">
+          <form method="POST">
+            {% csrf_token %}
+            <label for="sort">Sort:</label>
+            <button type="submit" name="sort" value="name_asc">Name A-Z</button>
+            <button type="submit" name="sort" value="name_desc">Name Z-A</button>
+            <button type="submit" name="sort" value="published_year_desc">Published Year ↓</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="book-cards">
+        {% if books %}
+          {% for book in books %}
+            <div class="book-card">
+              <div class="book-info">
+                <img src="{{ book.cover_image.url }}" alt="Book Cover" class="book-cover" />
+                {% comment %} <h2 class="book-title">{{ book.title }}</h2> {% endcomment %}
+                <p class="book-author">Author: {{ book.author.name }}</p>
+                <div class="buttons">
+                  <button class="view_details_BTN"><a href="{% url 'book_detail' pk=book.pk %}" class="book-link" style="text-decoration: none;">View Details</a></button>
+                  <button class="remove_BTN"><a href="{% url 'remove_from_wishlist' pk=book.pk %}" class="book-link" style="text-decoration: none;">Remove</a></button>
+                  <button class="IssueBTN"><a href="{% url 'borrow_book' pk=book.pk %}" class="book-link" style="text-decoration: none;">Issue Book</a></button>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <h2>No Books Found</h2>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>

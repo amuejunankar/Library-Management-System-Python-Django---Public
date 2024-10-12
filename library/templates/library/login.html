@@ -1,0 +1,99 @@
+{% load socialaccount %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'styles/login_signup.css' %}" />
+    <link rel="stylesheet" href="{% static 'styles/index.css' %}" />
+
+    <style>
+      
+      .social-login {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+      
+      .social-login button {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+        transition: background-color 0.3s;
+        font-size: 18px;
+        padding: 10px 12px;
+        
+      }
+      
+      .social-login button:hover {
+        background-color: #e0e0e0;
+        
+      }
+      
+      .social-logo {
+        width: 20px;
+        height: 20px;
+        margin-right: 4px;
+      }
+      
+      .social-text {
+        margin-left: 4px;
+        
+      }
+      
+      .hr-separator {
+        margin-top: 5px;
+        border: 0;
+        border-top: 1px solid #b4b4b4;
+      }
+      .forgot-password {
+        margin-bottom: 10px;
+      }
+
+      
+    </style>
+  </head>
+
+  <body>
+    {% include 'library/navbar.html' %}
+    <div class="login-signup-body">
+      <div class="container login-form">
+        <h1>Login</h1>
+        <form method="POST">
+          {% csrf_token %}
+          <input type="text" name="username" placeholder="Username" class="input-field" required />
+          <input type="password" name="password" placeholder="Password" class="input-field" required />
+          <div class="forgot-password">
+            <a style="text-decoration: none;" href="{% url 'forgot_password' %}">Forgot Password?</a>
+          </div>
+          <input type="submit" value="Login" class="submit-btn" />
+        </form>
+
+        <p class="signup-link">
+          Don't have an account? <a href="{% url 'user_signup' %}" class="link">Sign up</a>
+        </p>
+
+        <hr class="hr-separator" />
+        <div class="social-login">
+          <a style="text-decoration: none;" href="{% provider_login_url 'google' %}?next=/&prompt=select_account">
+            <button type="button" class="btn btn-white">
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo" class="social-logo" />
+              <span class="social-text">Google</span>
+            </button>
+          </a>
+          
+          <a style="text-decoration: none;" href="{% provider_login_url 'github' %}?next=/">
+            <button type="button" class="btn btn-white">
+              <img src="https://img.icons8.com/glyph-neue/64/github.png" alt="GitHub Logo" class="social-logo" />
+              <span class="social-text">GitHub</span>
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

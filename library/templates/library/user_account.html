@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Account</title>
+    <link rel="stylesheet" href="{% static 'styles/index.css' %}" />
+  </head>
+  <body>
+    {% include 'library/navbar.html' %} 
+    <div>
+      <h1>Welcome to Your Account</h1>
+      <h2>Your Borrowed Books:</h2>
+      <ul>
+        {% for borrowed_book in borrowed_books %}
+          <li>
+            <strong>Title:</strong> {{ borrowed_book.book.title }}<br />
+            <strong>Author:</strong> {{ borrowed_book.book.author.name }}<br />
+            <strong>Borrowed Date:</strong> {{ borrowed_book.borrowed_date }}<br />
+            <strong>Due Date:</strong> {{ borrowed_book.due_date }}<br />
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>

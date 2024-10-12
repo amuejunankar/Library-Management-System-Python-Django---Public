@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue Book - {{ book.title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        .issue-book-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .book-cover {
+            flex: 1 1 200px;
+            text-align: center;
+        }
+
+        .book-cover img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-details {
+            flex: 2 1 500px;
+        }
+
+        h1, h2 {
+            color: #1a73e8;
+            margin-bottom: 15px;
+        }
+
+        p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        input[type='date'], input[type='submit'], button {
+            padding: 12px;
+            width: 100%;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input[type='submit'], button {
+            background-color: #1a73e8;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type='submit']:hover, button:hover {
+            background-color: #155cb7;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .actions button {
+            flex: 1;
+        }
+
+        .fine-info, .additional-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+
+        .fine-info h2, .additional-info h2 {
+            color: #d32f2f;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .additional-info {
+            font-style: italic;
+            text-align: center;
+            color: #666;
+        }
+
+        .date-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .date-group .input-group {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .issue-book-container {
+                padding: 20px;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .book-cover {
+                flex: 0 0 100%;
+            }
+
+            .date-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'library/navbar.html' %}
+    <div class="issue-book-container">
+        <div class="book-cover">
+            {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" alt="{{ book.title }} cover">
+            {% else %}
+                <img src="{% static 'images/default_cover.jpg' %}" alt="Default book cover">
+            {% endif %}
+        </div>
+        <div class="book-details">
+            <h1>Issue Book</h1>
+            <h2>{{ book.title }}</h2>
+            <p><strong>Author:</strong> {{ book.author }}</p>
+            <p><strong>Genre:</strong> {{ book.get_genre_display }}</p>
+            <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+            <p><strong>Published:</strong> {{ book.published_year }}</p>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="date-group">
+                    <div class="input-group">
+                        <label for="issue-date">Issue Date:</label>
+                        <input readonly type="date" id="issue-date" name="issue-date" onchange="updateReturnDateRange()" />
+                    </div>
+                    <div class="input-group">
+                        <label for="return-date">Return Date:</label>
+                        <input type="date" id="return-date" name="return-date" min="" max="" />
+                    </div>
+                </div>
+                <div class="actions">
+                    <button type="submit">Borrow</button>
+                    <button type="button" onclick="window.location.href='{% url 'book_list' %}'">Cancel</button>
+                </div>
+            </form>
+            
+            <div class="additional-info">
+                <p>Please return the book by the specified return date to avoid fines.</p>
+                <p>Fine Amount: ₹ 49 Per Day</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var issueDateInput = document.getElementById('issue-date');
+            var today = new Date();
+            var formattedToday = today.toISOString().split('T')[0];
+            issueDateInput.value = formattedToday;
+            updateReturnDateRange();
+        });
+
+        function updateReturnDateRange() {
+            var issueDateInput = document.getElementById('issue-date');
+            var returnDateInput = document.getElementById('return-date');
+            var issueDateValue = issueDateInput.value;
+            var maxReturnDate = new Date(issueDateValue);
+            maxReturnDate.setDate(maxReturnDate.getDate() + 21);
+            var formattedMaxReturnDate = maxReturnDate.toISOString().split('T')[0];
+            returnDateInput.min = issueDateValue;
+            returnDateInput.max = formattedMaxReturnDate;
+        }
+    </script>
+</body>
+</html>
